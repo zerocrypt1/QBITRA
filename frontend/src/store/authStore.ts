@@ -12,27 +12,35 @@ interface AuthState {
   logout: () => void;
 }
 
-const persistedToken = localStorage.getItem(STORAGE_KEYS.authToken);
-const initialToken = persistedToken && !isTokenExpired(persistedToken) ? persistedToken : null;
-const initialUser = initialToken ? storage.get<User>(STORAGE_KEYS.authUser) : null;
+const resolveInitialAuthState = () => {
+  const persistedToken = localStorage.getItem(STORAGE_KEYS.authToken);
+  const token = persistedToken && !isTokenExpired(persistedToken) ? persistedToken : null;
+  const user = token ? storage.get<User>(STORAGE_KEYS.authUser) : null;
 
-if (!initialToken && persistedToken) {
-  localStorage.removeItem(STORAGE_KEYS.authToken);
-  storage.remove(STORAGE_KEYS.authUser);
-}
-
-export const useAuthStore = create<AuthState>((set) => ({
-  token: initialToken,
-  user: initialUser,
-  isAuthenticated: Boolean(initialToken),
-  login: (token, user) => {
-    localStorage.setItem(STORAGE_KEYS.authToken, token);
-    storage.set(STORAGE_KEYS.authUser, user);
-    set({ token, user, isAuthenticated: true });
-  },
-  logout: () => {
+  if (!token && persistedToken) {
     localStorage.removeItem(STORAGE_KEYS.authToken);
     storage.remove(STORAGE_KEYS.authUser);
-    set({ token: null, user: null, isAuthenticated: false });
-  },
-}));
+  }
+
+  return { token, user };
+};
+
+export const useAuthStore = create<AuthState>((set) => {
+  const initialState = resolveInitialAuthState();
+
+  return {
+    token: initialState.token,
+    user: initialState.user,
+    isAuthenticated: Boolean(initialState.token),
+    login: (token, user) => {
+      localStorage.setItem(STORAGE_KEYS.authToken, token);
+      storage.set(STORAGE_KEYS.authUser, user);
+      set({ token, user, isAuthenticated: true });
+    },
+    logout: () => {
+      localStorage.removeItem(STORAGE_KEYS.authToken);
+      storage.remove(STORAGE_KEYS.authUser);
+      set({ token: null, user: null, isAuthenticated: false });
+    },
+  };
+});

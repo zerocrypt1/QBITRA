@@ -23,7 +23,9 @@ export const ContestCard = ({ contest }: { contest: Contest }) => {
             <Clock3 size={14} /> Countdown
           </p>
           <p className="font-mono text-slate-100">
-            {countdown.days}d {countdown.hours}h {countdown.minutes}m {countdown.seconds}s
+            {countdown.completed
+              ? 'Contest started'
+              : `${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s`}
           </p>
         </div>
         <div className="rounded-xl bg-white/5 p-3">

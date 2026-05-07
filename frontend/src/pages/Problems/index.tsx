@@ -27,8 +27,9 @@ const ProblemsPage = () => {
     });
   }, [debouncedQuery, difficulty, tags]);
 
-  const totalPages = Math.max(Math.ceil(filtered.length / PAGE_SIZE), 1);
-  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = filtered.length === 0 ? 0 : Math.ceil(filtered.length / PAGE_SIZE);
+  const currentPage = totalPages === 0 ? 1 : Math.min(page, totalPages);
+  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
     <PageContainer>
@@ -56,9 +57,9 @@ const ProblemsPage = () => {
           </div>
 
           <div className="mt-4 flex items-center justify-end gap-2">
-            <Button variant="ghost" disabled={page === 1} onClick={() => setPage((value) => Math.max(value - 1, 1))}>Prev</Button>
-            <span className="text-sm text-slate-400">Page {page}/{totalPages}</span>
-            <Button variant="secondary" disabled={page >= totalPages} onClick={() => setPage((value) => Math.min(value + 1, totalPages))}>Next</Button>
+            <Button variant="ghost" disabled={currentPage === 1} onClick={() => setPage((value) => Math.max(value - 1, 1))}>Prev</Button>
+            <span className="text-sm text-slate-400">Page {currentPage}/{totalPages}</span>
+            <Button variant="secondary" disabled={currentPage >= totalPages} onClick={() => setPage((value) => Math.min(value + 1, totalPages))}>Next</Button>
           </div>
         </>
       ) : null}

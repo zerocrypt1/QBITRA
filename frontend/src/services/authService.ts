@@ -5,11 +5,35 @@ import { mockUser } from './mockData';
 
 export const authService = {
   async login(email: string, password: string) {
-    await api.post(ENDPOINTS.auth.login, { email, password }).catch(() => null);
-    return { token: 'demo-token-qbitra', user: mockUser as User };
+    try {
+      const response = await api.post(ENDPOINTS.auth.login, { email, password });
+      if (response.data?.token && response.data?.user) {
+        return { token: response.data.token as string, user: response.data.user as User };
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+
+    if (import.meta.env.DEV) {
+      return { token: 'demo-token-qbitra', user: mockUser as User };
+    }
+
+    throw new Error('Unable to authenticate user.');
   },
   async signup(name: string, email: string, password: string) {
-    await api.post(ENDPOINTS.auth.signup, { name, email, password }).catch(() => null);
-    return { token: 'demo-token-qbitra', user: { ...mockUser, name, email } as User };
+    try {
+      const response = await api.post(ENDPOINTS.auth.signup, { name, email, password });
+      if (response.data?.token && response.data?.user) {
+        return { token: response.data.token as string, user: response.data.user as User };
+      }
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
+
+    if (import.meta.env.DEV) {
+      return { token: 'demo-token-qbitra', user: { ...mockUser, name, email } as User };
+    }
+
+    throw new Error('Unable to create account.');
   },
 };
