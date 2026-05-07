@@ -3,9 +3,9 @@ import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { useProblemStore } from '@/store/problemStore';
 
-const tags = ['Array', 'DP', 'Greedy', 'Graph', 'Math'];
+const defaultTags = ['Array', 'DP', 'Greedy', 'Graph', 'Math'];
 
-export const ProblemFilters = () => {
+export const ProblemFilters = ({ tags = defaultTags }: { tags?: string[] }) => {
   const query = useProblemStore((state) => state.query);
   const difficulty = useProblemStore((state) => state.difficulty);
   const selectedTags = useProblemStore((state) => state.tags);

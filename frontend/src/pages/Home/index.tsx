@@ -1,4 +1,5 @@
 import { ArrowRight, Sparkles, Trophy, Zap } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { PageContainer } from '@/components/common/PageContainer';
@@ -6,7 +7,9 @@ import { SectionHeader } from '@/components/common/SectionHeader';
 import { Button } from '@/components/common/Button';
 import { ProblemCard } from '@/components/problem/ProblemCard';
 import { ContestCard } from '@/components/contest/ContestCard';
-import { mockContests, mockProblems } from '@/services/mockData';
+import { problemService } from '@/services/problemService';
+import { contestService } from '@/services/contestService';
+import type { Contest, Problem } from '@/types';
 
 const stats = [
   { label: 'Active Coders', value: '84K+' },
@@ -15,8 +18,24 @@ const stats = [
   { label: 'Daily Submissions', value: '1.4M' },
 ];
 
-const HomePage = () => (
-  <PageContainer>
+const HomePage = () => {
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const [contests, setContests] = useState<Contest[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([problemService.list(), contestService.list()]).then(([problemItems, contestItems]) => {
+      if (!mounted) return;
+      setProblems(problemItems);
+      setContests(contestItems);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return (
+    <PageContainer>
     <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/30 px-5 py-10 backdrop-blur-xl md:px-10">
       <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-neon-blue/20 blur-3xl" />
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -47,7 +66,7 @@ const HomePage = () => (
     <section className="mt-10">
       <SectionHeader title="Featured Problems" subtitle="Curated set to sharpen your core DSA instincts." />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {mockProblems.slice(0, 3).map((problem) => (
+        {problems.slice(0, 3).map((problem) => (
           <ProblemCard key={problem.id} problem={problem} />
         ))}
       </div>
@@ -56,7 +75,7 @@ const HomePage = () => (
     <section className="mt-10">
       <SectionHeader title="Trending Contests" subtitle="Live and upcoming battles in the arena." />
       <div className="grid gap-4 lg:grid-cols-3">
-        {mockContests.map((contest) => (
+        {contests.map((contest) => (
           <ContestCard key={contest.id} contest={contest} />
         ))}
       </div>
@@ -72,7 +91,8 @@ const HomePage = () => (
       <p>© {new Date().getFullYear()} QBITRA. All rights reserved.</p>
       <p className="inline-flex items-center gap-1"><Trophy size={14} /> CODE. SOLVE. EVOLVE.</p>
     </footer>
-  </PageContainer>
-);
+    </PageContainer>
+  );
+};
 
 export default HomePage;

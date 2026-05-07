@@ -14,6 +14,7 @@ import (
 type ProblemService interface {
 	Create(ctx context.Context, req dto.ProblemCreateRequest, authorID string) error
 	List(ctx context.Context, limit, offset int64, publicOnly bool) ([]models.Problem, error)
+	Get(ctx context.Context, id string) (*models.Problem, error)
 }
 
 type problemService struct {
@@ -40,4 +41,8 @@ func (s *problemService) Create(ctx context.Context, req dto.ProblemCreateReques
 
 func (s *problemService) List(ctx context.Context, limit, offset int64, publicOnly bool) ([]models.Problem, error) {
 	return s.repo.List(ctx, limit, offset, publicOnly)
+}
+
+func (s *problemService) Get(ctx context.Context, id string) (*models.Problem, error) {
+	return s.repo.FindByID(ctx, id)
 }
