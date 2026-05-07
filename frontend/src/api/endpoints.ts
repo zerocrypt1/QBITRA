@@ -13,6 +13,7 @@ export const ENDPOINTS = {
   },
   problems: {
     list: '/problems',
+    byId: (id: string) => `/problems/${id}`,
     create: '/problems',
   },
   submissions: {

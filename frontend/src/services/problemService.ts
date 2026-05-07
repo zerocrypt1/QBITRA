@@ -36,6 +36,10 @@ export const problemService = {
     return mockProblems;
   },
   async get(id: string) {
+    const response = await api.get(ENDPOINTS.problems.byId(id)).catch(() => null);
+    if (response?.data?.id) {
+      return toProblem(response.data as BackendProblem);
+    }
     const items = await this.list();
     return items.find((problem) => problem.id === id) ?? mockProblems.find((problem) => problem.id === id) ?? null;
   },

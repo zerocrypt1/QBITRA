@@ -44,6 +44,7 @@ func Register(r *gin.Engine, deps Deps) {
 		problems := api.Group("/problems")
 		{
 			problems.GET("", deps.Problems.List)
+			problems.GET("/:id", deps.Problems.Get)
 			problemsAuth := problems.Group("")
 			problemsAuth.Use(middleware.JWT(deps.JWTSecret), middleware.RBAC(constants.RoleAdmin, constants.RoleModerator))
 			problemsAuth.POST("", deps.Problems.Create)

@@ -43,3 +43,13 @@ func (p *ProblemController) List(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"items": items, "limit": limit, "offset": offset})
 }
+
+func (p *ProblemController) Get(c *gin.Context) {
+	id := c.Param("id")
+	item, err := p.svc.Get(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "problem not found"})
+		return
+	}
+	c.JSON(http.StatusOK, item)
+}
