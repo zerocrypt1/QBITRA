@@ -3,6 +3,12 @@ import { api } from '@/api/axios';
 import { ENDPOINTS } from '@/api/endpoints';
 import { mockUser } from './mockData';
 
+const createDevToken = () => {
+  const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
+  const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 60 * 60 * 12 }));
+  return `${header}.${payload}.dev-signature`;
+};
+
 export const authService = {
   async login(email: string, password: string) {
     try {
@@ -15,7 +21,7 @@ export const authService = {
     }
 
     if (import.meta.env.DEV) {
-      return { token: 'demo-token-qbitra', user: mockUser as User };
+      return { token: createDevToken(), user: mockUser as User };
     }
 
     throw new Error('Unable to authenticate user.');
@@ -31,7 +37,7 @@ export const authService = {
     }
 
     if (import.meta.env.DEV) {
-      return { token: 'demo-token-qbitra', user: { ...mockUser, name, email } as User };
+      return { token: createDevToken(), user: { ...mockUser, name, email } as User };
     }
 
     throw new Error('Unable to create account.');

@@ -35,9 +35,6 @@ const ProblemsPage = () => {
     <PageContainer>
       <SectionHeader title="Problems" subtitle="Search, filter and solve across all difficulty levels." />
       <ProblemFilters />
-
-
-
       {filtered.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center text-sm text-slate-400">
           No problems matched your current filters. Try widening your search.

@@ -7,7 +7,7 @@ const decodeBase64Url = (value: string) => {
 export const isTokenExpired = (token: string) => {
   const parts = token.split('.');
   if (parts.length !== 3) {
-    return false;
+    return true;
   }
 
   try {

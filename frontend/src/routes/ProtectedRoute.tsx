@@ -1,13 +1,11 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
-import { isTokenExpired } from '@/utils/auth';
 
 export const ProtectedRoute = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const token = useAuthStore((state) => state.token);
   const location = useLocation();
 
-  if (!isAuthenticated || (token ? isTokenExpired(token) : false)) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
