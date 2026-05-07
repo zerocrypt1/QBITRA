@@ -131,3 +131,6 @@ src/assets/generated/
 # Secrets
 secrets/
 config/secrets.json
+# Go build artifacts
+backend/server
+backend/*.exe
