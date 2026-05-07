@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export const SectionHeader = ({
   title,
   subtitle,
@@ -5,7 +7,7 @@ export const SectionHeader = ({
 }: {
   title: string;
   subtitle?: string;
-  action?: React.ReactNode;
+  action?: ReactNode;
 }) => (
   <div className="mb-6 flex items-end justify-between gap-3">
     <div>

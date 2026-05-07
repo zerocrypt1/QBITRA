@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
+import type { ReactNode } from 'react';
 
-export const PageContainer = ({ children }: { children: React.ReactNode }) => (
+export const PageContainer = ({ children }: { children: ReactNode }) => (
   <motion.main
     className="mx-auto w-full max-w-7xl px-4 py-8 md:px-6"
     initial={{ opacity: 0, y: 10 }}

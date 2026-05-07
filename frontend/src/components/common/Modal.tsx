@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { Button } from './Button';
 
@@ -6,7 +7,7 @@ interface ModalProps {
   open: boolean;
   title: string;
   onClose: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const Modal = ({ open, title, onClose, children }: ModalProps) => (

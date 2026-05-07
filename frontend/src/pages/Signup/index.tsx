@@ -1,5 +1,6 @@
-import { Github, Mail, UserRound } from 'lucide-react';
+import { Code2, Mail, UserRound } from 'lucide-react';
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
@@ -15,7 +16,7 @@ const SignupPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!name || !email || !password) {
       toast.warning('Incomplete form', 'Please complete all required fields.');
@@ -40,7 +41,7 @@ const SignupPage = () => {
       </form>
 
       <div className="mt-4 space-y-2">
-        <Button variant="ghost" className="w-full"><Github size={14} className="mr-2" /> Sign up with GitHub</Button>
+        <Button variant="ghost" className="w-full"><Code2 size={14} className="mr-2" /> Sign up with GitHub</Button>
         <Button variant="ghost" className="w-full"><Mail size={14} className="mr-2" /> Sign up with Google</Button>
       </div>
 

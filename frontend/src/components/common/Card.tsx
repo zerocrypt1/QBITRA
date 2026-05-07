@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import type { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 export const Card = ({
@@ -7,7 +8,7 @@ export const Card = ({
   hover = true,
 }: {
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   hover?: boolean;
 }) => (
   <motion.div

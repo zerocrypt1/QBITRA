@@ -1,4 +1,5 @@
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
+import type { ReactNode } from 'react';
 
 interface ThemeContextValue {
   theme: 'dark';
@@ -6,8 +7,6 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue>({ theme: 'dark' });
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => (
+export const ThemeProvider = ({ children }: { children: ReactNode }) => (
   <ThemeContext.Provider value={{ theme: 'dark' }}>{children}</ThemeContext.Provider>
 );
-
-export const useTheme = () => useContext(ThemeContext);

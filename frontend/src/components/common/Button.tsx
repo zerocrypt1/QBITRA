@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
+import type { ButtonHTMLAttributes } from 'react';
 import { cn } from '@/utils/cn';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost';
 }
 

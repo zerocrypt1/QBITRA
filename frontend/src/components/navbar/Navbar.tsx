@@ -3,7 +3,6 @@ import { Code2, Menu, X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { BRAND } from '@/utils/constants';
 import { useUIStore } from '@/store/uiStore';
-import { Button } from '@/components/common/Button';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -39,9 +38,12 @@ export const Navbar = () => {
               {link.label}
             </NavLink>
           ))}
-          <Button variant="secondary" className="ml-2" as-child={undefined}>
-            <NavLink to="/login">Sign in</NavLink>
-          </Button>
+          <NavLink
+            to="/login"
+            className="ml-2 inline-flex items-center justify-center rounded-xl border border-surface-border-bright bg-surface-elevated px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-surface-border"
+          >
+            Sign in
+          </NavLink>
         </div>
 
         <button

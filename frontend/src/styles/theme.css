@@ -1,16 +1,3 @@
-@import "tailwindcss";
-
-@theme {
-  --color-brand-orange: rgb(249, 115, 22);
-  --color-surface-base: #07070b;
-  --color-surface-card: #101018;
-  --color-surface-elevated: #171721;
-  --color-surface-border: #262633;
-  --color-surface-border-bright: #3b3b4c;
-  --color-neon-blue: #3b82f6;
-  --color-neon-purple: #8b5cf6;
-}
-
 :root {
   color-scheme: dark;
 }

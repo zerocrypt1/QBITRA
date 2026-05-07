@@ -1,4 +1,5 @@
-import { Github, Lock, Mail } from 'lucide-react';
+import { Code2, Lock, Mail } from 'lucide-react';
+import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Input } from '@/components/common/Input';
@@ -16,7 +17,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email || !password) {
       toast.warning('Missing credentials', 'Please fill both email and password.');
@@ -50,7 +51,7 @@ const LoginPage = () => {
       </form>
 
       <div className="mt-4 space-y-2">
-        <Button variant="ghost" className="w-full"><Github size={14} className="mr-2" /> Continue with GitHub</Button>
+        <Button variant="ghost" className="w-full"><Code2 size={14} className="mr-2" /> Continue with GitHub</Button>
         <Button variant="ghost" className="w-full"><Mail size={14} className="mr-2" /> Continue with Google</Button>
       </div>
 
