@@ -19,16 +19,19 @@ interface BackendUser {
   avatar_key?: string;
 }
 
-const toUser = (user: BackendUser): User => ({
-  id: user.id,
-  name: user.username ?? user.email.split('@')[0] ?? 'User',
-  email: user.email,
-  avatar: user.avatar_key || `https://api.dicebear.com/9.x/adventurer/svg?seed=${user.id}`,
-  rating: user.rating ?? 0,
-  streak: 0,
-  solvedCount: user.solved_problems?.length ?? 0,
-  role: user.role === 'admin' ? 'admin' : 'user',
-});
+const toUser = (user: BackendUser): User => {
+  const emailPrefix = typeof user.email === 'string' && user.email.includes('@') ? user.email.split('@')[0] : '';
+  return {
+    id: user.id,
+    name: user.username || emailPrefix || 'User',
+    email: user.email,
+    avatar: user.avatar_key || `https://api.dicebear.com/9.x/adventurer/svg?seed=${user.id}`,
+    rating: user.rating ?? 0,
+    streak: 0,
+    solvedCount: user.solved_problems?.length ?? 0,
+    role: user.role === 'admin' ? 'admin' : 'user',
+  };
+};
 
 export const authService = {
   async login(email: string, password: string) {

@@ -40,7 +40,6 @@ export const problemService = {
     if (response?.data?.id) {
       return toProblem(response.data as BackendProblem);
     }
-    const items = await this.list();
-    return items.find((problem) => problem.id === id) ?? null;
+    return mockProblems.find((problem) => problem.id === id) ?? null;
   },
 };
