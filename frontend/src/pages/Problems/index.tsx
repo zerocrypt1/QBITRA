@@ -32,10 +32,6 @@ const ProblemsPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedQuery, difficulty, tags]);
-
   const availableTags = useMemo(
     () => [...new Set(problems.flatMap((problem) => problem.tags))].sort((a, b) => a.localeCompare(b)),
     [problems],
