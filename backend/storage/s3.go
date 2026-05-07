@@ -2,9 +2,10 @@ package storage
 
 import (
 	"context"
+	cryptorand "crypto/rand"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/big"
 	"path/filepath"
 	"strings"
 	"time"
@@ -40,8 +41,12 @@ func (s *S3Storage) UploadAvatar(ctx context.Context, file io.Reader, fileName, 
 		return "", fmt.Errorf("unsupported mime type")
 	}
 	ext := filepath.Ext(strings.ToLower(fileName))
-	key := fmt.Sprintf("avatars/%d-%08d%s", time.Now().Unix(), rand.Int31(), ext)
-	_, err := s.client.PutObject(ctx, &s3.PutObjectInput{
+	rn, err := cryptorand.Int(cryptorand.Reader, big.NewInt(99999999))
+	if err != nil {
+		return "", err
+	}
+	key := fmt.Sprintf("avatars/%d-%08d%s", time.Now().Unix(), rn.Int64(), ext)
+	_, err = s.client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:               &s.bucket,
 		Key:                  &key,
 		Body:                 file,

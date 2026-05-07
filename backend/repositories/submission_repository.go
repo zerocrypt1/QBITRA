@@ -47,7 +47,10 @@ func (r *submissionRepository) UpdateVerdict(ctx context.Context, id, verdict st
 }
 
 func (r *submissionRepository) ListByUser(ctx context.Context, userID string, limit, offset int64) ([]models.Submission, error) {
-	cur, err := r.col.Find(ctx, bson.M{"user_id": userID}, options.Find().SetLimit(limit).SetSkip(offset).SetSort(bson.M{"created_at": -1}))
+	if err := validateSafeID(userID); err != nil {
+		return nil, err
+	}
+	cur, err := r.col.Find(ctx, bson.D{{Key: "user_id", Value: userID}}, options.Find().SetLimit(limit).SetSkip(offset).SetSort(bson.M{"created_at": -1}))
 	if err != nil {
 		return nil, err
 	}

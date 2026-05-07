@@ -32,14 +32,20 @@ func (r *sessionRepository) Create(ctx context.Context, s *models.Session) error
 }
 
 func (r *sessionRepository) FindByRefreshJTI(ctx context.Context, jti string) (*models.Session, error) {
+	if err := validateSafeID(jti); err != nil {
+		return nil, err
+	}
 	var s models.Session
-	if err := r.col.FindOne(ctx, bson.M{"refresh_jti": jti}).Decode(&s); err != nil {
+	if err := r.col.FindOne(ctx, bson.D{{Key: "refresh_jti", Value: jti}}).Decode(&s); err != nil {
 		return nil, err
 	}
 	return &s, nil
 }
 
 func (r *sessionRepository) RevokeByRefreshJTI(ctx context.Context, jti string) error {
-	_, err := r.col.UpdateOne(ctx, bson.M{"refresh_jti": jti}, bson.M{"$set": bson.M{"revoked_at": time.Now().UTC(), "updated_at": time.Now().UTC()}})
+	if err := validateSafeID(jti); err != nil {
+		return err
+	}
+	_, err := r.col.UpdateOne(ctx, bson.D{{Key: "refresh_jti", Value: jti}}, bson.M{"$set": bson.M{"revoked_at": time.Now().UTC(), "updated_at": time.Now().UTC()}})
 	return err
 }

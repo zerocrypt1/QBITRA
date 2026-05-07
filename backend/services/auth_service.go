@@ -2,11 +2,13 @@ package services
 
 import (
 	"context"
+	cryptorand "crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"log/slog"
+	"math/big"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -117,7 +119,11 @@ func (s *authService) Logout(ctx context.Context, refreshToken string) error {
 }
 
 func (s *authService) GenerateOTP(ctx context.Context, email string) (string, error) {
-	otp := fmt.Sprintf("%06d", time.Now().UnixNano()%1000000)
+	n, err := cryptorand.Int(cryptorand.Reader, big.NewInt(1000000))
+	if err != nil {
+		return "", err
+	}
+	otp := fmt.Sprintf("%06d", n.Int64())
 	key := fmt.Sprintf("otp:%s", email)
 	if err := s.redis.Set(ctx, key, otp, 10*time.Minute).Err(); err != nil {
 		return "", err

@@ -69,7 +69,7 @@ func main() {
 	submissionCtrl := controllers.NewSubmissionController(submissionSvc)
 	contestCtrl := controllers.NewContestController()
 	commentCtrl := controllers.NewCommentController()
-	wsHub := websocket.NewHub()
+	wsHub := websocket.NewHub(cfg.AllowedOrigins)
 
 	if os.Getenv("RUN_WORKERS") == "true" {
 		worker := workers.New(cfg.RedisAddr, cfg.RedisPassword, cfg.RedisDB, cfg.AsynqConcurrency, mailSvc, submissionRepo, logg)

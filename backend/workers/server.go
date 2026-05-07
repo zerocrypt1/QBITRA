@@ -2,9 +2,10 @@ package workers
 
 import (
 	"context"
+	cryptorand "crypto/rand"
 	"encoding/json"
 	"log/slog"
-	"math/rand"
+	"math/big"
 	"time"
 
 	"github.com/hibiken/asynq"
@@ -58,9 +59,21 @@ func (w *WorkerServer) handleProcessSubmission(_ context.Context, t *asynq.Task)
 		return err
 	}
 	verdicts := []string{"Accepted", "Wrong Answer", "Time Limit Exceeded", "Runtime Error"}
-	verdict := verdicts[rand.Intn(len(verdicts))]
-	runtimeMS := 5 + rand.Intn(220)
-	memoryKB := 128 + rand.Intn(4096)
+	vIdx, err := cryptorand.Int(cryptorand.Reader, big.NewInt(int64(len(verdicts))))
+	if err != nil {
+		return err
+	}
+	rt, err := cryptorand.Int(cryptorand.Reader, big.NewInt(220))
+	if err != nil {
+		return err
+	}
+	mem, err := cryptorand.Int(cryptorand.Reader, big.NewInt(4096))
+	if err != nil {
+		return err
+	}
+	verdict := verdicts[vIdx.Int64()]
+	runtimeMS := 5 + int(rt.Int64())
+	memoryKB := 128 + int(mem.Int64())
 	time.Sleep(2 * time.Second)
 	return w.submissions.UpdateVerdict(context.Background(), p.SubmissionID, verdict, runtimeMS, memoryKB)
 }

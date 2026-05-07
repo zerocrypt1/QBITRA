@@ -37,8 +37,8 @@ services:
       MONGO_URI: mongodb://root:rootpass@mongodb:27017
       MONGO_DB_NAME: qbitra
       REDIS_ADDR: redis:6379
-      COOKIE_SECURE: "false"
-      CSRF_ENABLED: "false"
+      COOKIE_SECURE: "true"
+      CSRF_ENABLED: "true"
     ports:
       - "8080:8080"
 

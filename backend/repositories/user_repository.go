@@ -34,8 +34,11 @@ func (r *userRepository) Create(ctx context.Context, u *models.User) error {
 }
 
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
+	if err := validateEmail(email); err != nil {
+		return nil, err
+	}
 	var u models.User
-	err := r.col.FindOne(ctx, bson.M{"email": email}).Decode(&u)
+	err := r.col.FindOne(ctx, bson.D{{Key: "email", Value: email}}).Decode(&u)
 	if err != nil {
 		return nil, err
 	}
