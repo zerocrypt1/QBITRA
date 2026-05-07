@@ -1,6 +1,6 @@
 package middleware
 
 const (
-ContextUserID = "user_id"
-ContextRole   = "role"
+	ContextUserID = "user_id"
+	ContextRole   = "role"
 )

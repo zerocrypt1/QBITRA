@@ -1,10 +1,10 @@
 package constants
 
 const (
-QueueCritical = "critical"
-QueueDefault  = "default"
-QueueLow      = "low"
+	QueueCritical = "critical"
+	QueueDefault  = "default"
+	QueueLow      = "low"
 
-TaskSendEmail        = "email:send"
-TaskProcessSubmission = "submission:process"
+	TaskSendEmail         = "email:send"
+	TaskProcessSubmission = "submission:process"
 )
