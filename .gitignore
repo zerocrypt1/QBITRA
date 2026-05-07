@@ -1,0 +1,133 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production
+dist/
+build/
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# OS Files
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Vite
+vite.config.ts.timestamp-*
+
+# Coverage
+coverage/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Temporary Files
+tmp/
+temp/
+
+# ESLint Cache
+.eslintcache
+
+# Stylelint Cache
+.stylelintcache
+
+# Testing
+playwright-report/
+test-results/
+
+# Lock Files (optional)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Tailwind
+.tailwindcss/
+
+# Storybook
+storybook-static/
+
+# Debug
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime Data
+pids/
+*.pid
+
+# Misc
+*.tgz
+*.bak
+*.old
+
+# Mac
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# Windows
+ehthumbs.db
+Desktop.ini
+
+# Firebase
+.firebase/
+firestore-debug.log
+ui-debug.log
+
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/
+
+# TurboRepo
+.turbo/
+
+# Next.js
+.next/
+
+# React Native
+.expo/
+
+# Sentry
+.sentryclirc
+
+# Optional Generated Assets
+src/assets/generated/
+
+# Monaco Editor Cache
+.monaco/
+
+# Local Database Files
+*.sqlite
+*.db
+
+# Secrets
+secrets/
+config/secrets.json
