@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import type { ToastMessage } from '@/types';
 import { generateClientId } from '@/utils/helpers';
 
+const toastTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
 interface UIState {
   mobileNavOpen: boolean;
   toasts: ToastMessage[];
@@ -17,9 +19,19 @@ export const useUIStore = create<UIState>((set) => ({
   pushToast: (toast) => {
     const id = generateClientId();
     set((state) => ({ toasts: [...state.toasts, { ...toast, id }] }));
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       set((state) => ({ toasts: state.toasts.filter((item) => item.id !== id) }));
+      toastTimers.delete(id);
     }, 3500);
+
+    toastTimers.set(id, timer);
   },
-  removeToast: (id) => set((state) => ({ toasts: state.toasts.filter((item) => item.id !== id) })),
+  removeToast: (id) => {
+    const timer = toastTimers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      toastTimers.delete(id);
+    }
+    set((state) => ({ toasts: state.toasts.filter((item) => item.id !== id) }));
+  },
 }));

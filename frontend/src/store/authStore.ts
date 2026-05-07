@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { User } from '@/types';
 import { STORAGE_KEYS } from '@/utils/constants';
 import { storage } from '@/utils/storage';
+import { isTokenExpired } from '@/utils/auth';
 
 interface AuthState {
   token: string | null;
@@ -11,8 +12,14 @@ interface AuthState {
   logout: () => void;
 }
 
-const initialToken = localStorage.getItem(STORAGE_KEYS.authToken);
-const initialUser = storage.get<User>(STORAGE_KEYS.authUser);
+const persistedToken = localStorage.getItem(STORAGE_KEYS.authToken);
+const initialToken = persistedToken && !isTokenExpired(persistedToken) ? persistedToken : null;
+const initialUser = initialToken ? storage.get<User>(STORAGE_KEYS.authUser) : null;
+
+if (!initialToken && persistedToken) {
+  localStorage.removeItem(STORAGE_KEYS.authToken);
+  storage.remove(STORAGE_KEYS.authUser);
+}
 
 export const useAuthStore = create<AuthState>((set) => ({
   token: initialToken,
