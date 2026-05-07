@@ -1,0 +1,70 @@
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Play, Send } from 'lucide-react';
+import { PageContainer } from '@/components/common/PageContainer';
+import { Card } from '@/components/common/Card';
+import { Button } from '@/components/common/Button';
+import { CodeEditor } from '@/components/editor/CodeEditor';
+import { TestcasePanel } from '@/components/editor/TestcasePanel';
+import { mockProblems } from '@/services/mockData';
+import { useToast } from '@/hooks/useToast';
+
+const starterCode = `function solve(input) {\n  // Write your solution\n  return input;\n}`;
+
+const ProblemDetailsPage = () => {
+  const { problemId } = useParams();
+  const problem = mockProblems.find((item) => item.id === problemId) ?? mockProblems[0];
+  const [code, setCode] = useState(starterCode);
+  const [input, setInput] = useState('1 2 3 4');
+  const [output, setOutput] = useState('10');
+  const toast = useToast();
+
+  return (
+    <PageContainer>
+      <div className="grid gap-4 xl:grid-cols-[1.05fr_1.2fr]">
+        <Card className="space-y-4" hover={false}>
+          <div>
+            <h1 className="text-2xl font-semibold text-white">{problem.title}</h1>
+            <p className="mt-1 text-sm text-slate-400">Difficulty: {problem.difficulty} • Points: {problem.points}</p>
+          </div>
+          <article className="space-y-4 text-sm text-slate-300">
+            <section>
+              <h2 className="mb-2 text-base font-semibold text-white">Statement</h2>
+              <p>
+                Given an array of integers, compute the target transformation while maintaining optimal time complexity.
+                Provide a deterministic output for all valid inputs.
+              </p>
+            </section>
+            <section>
+              <h2 className="mb-2 text-base font-semibold text-white">Constraints</h2>
+              <ul className="list-disc space-y-1 pl-5">
+                <li>1 ≤ n ≤ 2 * 10^5</li>
+                <li>Runtime limit: 2s</li>
+                <li>Memory limit: 256MB</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="mb-2 text-base font-semibold text-white">Example</h2>
+              <pre className="rounded-xl bg-black/40 p-3 font-mono text-xs">Input: 1 2 3 4\nOutput: 10</pre>
+            </section>
+          </article>
+        </Card>
+
+        <div className="space-y-4">
+          <CodeEditor language="javascript" value={code} onChange={setCode} />
+          <TestcasePanel input={input} output={output} setInput={setInput} setOutput={setOutput} />
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => toast.info('Run finished', 'Execution completed in 42ms')}>
+              <Play size={14} className="mr-2" /> Run Code
+            </Button>
+            <Button onClick={() => toast.success('Submission accepted', 'All testcases passed successfully')}>
+              <Send size={14} className="mr-2" /> Submit
+            </Button>
+          </div>
+        </div>
+      </div>
+    </PageContainer>
+  );
+};
+
+export default ProblemDetailsPage;
