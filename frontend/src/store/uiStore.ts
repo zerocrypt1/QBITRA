@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { ToastMessage } from '@/types';
+import { generateClientId } from '@/utils/helpers';
 
 interface UIState {
   mobileNavOpen: boolean;
@@ -14,10 +15,7 @@ export const useUIStore = create<UIState>((set) => ({
   toasts: [],
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
   pushToast: (toast) => {
-    const id =
-      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-        ? crypto.randomUUID()
-        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+    const id = generateClientId();
     set((state) => ({ toasts: [...state.toasts, { ...toast, id }] }));
     setTimeout(() => {
       set((state) => ({ toasts: state.toasts.filter((item) => item.id !== id) }));

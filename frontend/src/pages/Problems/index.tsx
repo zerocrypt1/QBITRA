@@ -35,21 +35,33 @@ const ProblemsPage = () => {
       <SectionHeader title="Problems" subtitle="Search, filter and solve across all difficulty levels." />
       <ProblemFilters />
 
-      <div className="mt-6 grid gap-4 lg:hidden">
-        {paged.map((problem) => (
-          <ProblemCard key={problem.id} problem={problem} />
-        ))}
-      </div>
 
-      <div className="mt-6 hidden lg:block">
-        <ProblemTable problems={paged} />
-      </div>
 
-      <div className="mt-4 flex items-center justify-end gap-2">
-        <Button variant="ghost" disabled={page === 1} onClick={() => setPage((value) => Math.max(value - 1, 1))}>Prev</Button>
-        <span className="text-sm text-slate-400">Page {page}/{totalPages}</span>
-        <Button variant="secondary" disabled={page >= totalPages} onClick={() => setPage((value) => Math.min(value + 1, totalPages))}>Next</Button>
-      </div>
+      {filtered.length === 0 ? (
+        <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center text-sm text-slate-400">
+          No problems matched your current filters. Try widening your search.
+        </div>
+      ) : null}
+
+      {filtered.length > 0 ? (
+        <>
+          <div className="mt-6 grid gap-4 lg:hidden">
+            {paged.map((problem) => (
+              <ProblemCard key={problem.id} problem={problem} />
+            ))}
+          </div>
+
+          <div className="mt-6 hidden lg:block">
+            <ProblemTable problems={paged} />
+          </div>
+
+          <div className="mt-4 flex items-center justify-end gap-2">
+            <Button variant="ghost" disabled={page === 1} onClick={() => setPage((value) => Math.max(value - 1, 1))}>Prev</Button>
+            <span className="text-sm text-slate-400">Page {page}/{totalPages}</span>
+            <Button variant="secondary" disabled={page >= totalPages} onClick={() => setPage((value) => Math.min(value + 1, totalPages))}>Next</Button>
+          </div>
+        </>
+      ) : null}
     </PageContainer>
   );
 };

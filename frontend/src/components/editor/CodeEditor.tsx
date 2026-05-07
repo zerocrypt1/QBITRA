@@ -8,7 +8,7 @@ interface CodeEditorProps {
 }
 
 export const CodeEditor = ({ language, value, onChange }: CodeEditorProps) => (
-  <Card className="p-0 overflow-hidden" hover={false}>
+  <Card className="overflow-hidden p-0" hover={false}>
     <MonacoEditor
       height="420px"
       theme="vs-dark"
