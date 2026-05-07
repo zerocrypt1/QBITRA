@@ -1,7 +1,9 @@
 import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { PageContainer } from '@/components/common/PageContainer';
 import { SectionHeader } from '@/components/common/SectionHeader';
-import { mockLeaderboard } from '@/services/mockData';
+import { leaderboardService } from '@/services/leaderboardService';
+import type { LeaderboardEntry } from '@/types';
 
 const TrendIcon = ({ change }: { change: number }) => {
   if (change > 0) return <ArrowUp size={14} className="text-emerald-300" />;
@@ -9,8 +11,23 @@ const TrendIcon = ({ change }: { change: number }) => {
   return <Minus size={14} className="text-slate-400" />;
 };
 
-const LeaderboardPage = () => (
-  <PageContainer>
+const LeaderboardPage = () => {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    leaderboardService.list().then((items) => {
+      if (mounted) {
+        setEntries(items);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return (
+    <PageContainer>
     <SectionHeader title="Leaderboard" subtitle="Global rankings, ratings, and streak performance." />
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/30">
       <div className="overflow-x-auto">
@@ -26,7 +43,7 @@ const LeaderboardPage = () => (
             </tr>
           </thead>
           <tbody>
-            {mockLeaderboard.map((entry) => (
+            {entries.map((entry) => (
               <tr key={entry.user.id} className="border-t border-white/5 hover:bg-white/[0.04]">
                 <td className="px-4 py-3 font-semibold text-white">#{entry.rank}</td>
                 <td className="px-4 py-3">
@@ -45,7 +62,8 @@ const LeaderboardPage = () => (
         </table>
       </div>
     </div>
-  </PageContainer>
-);
+    </PageContainer>
+  );
+};
 
 export default LeaderboardPage;

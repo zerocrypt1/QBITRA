@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PageContainer } from '@/components/common/PageContainer';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { ProblemFilters } from '@/components/problem/ProblemFilters';
@@ -7,25 +7,48 @@ import { ProblemTable } from '@/components/problem/ProblemTable';
 import { Button } from '@/components/common/Button';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useProblemStore } from '@/store/problemStore';
-import { mockProblems } from '@/services/mockData';
+import { problemService } from '@/services/problemService';
+import type { Problem } from '@/types';
 
 const PAGE_SIZE = 4;
 
 const ProblemsPage = () => {
   const [page, setPage] = useState(1);
+  const [problems, setProblems] = useState<Problem[]>([]);
   const query = useProblemStore((state) => state.query);
   const difficulty = useProblemStore((state) => state.difficulty);
   const tags = useProblemStore((state) => state.tags);
   const debouncedQuery = useDebounce(query);
 
+  useEffect(() => {
+    let mounted = true;
+    problemService.list().then((items) => {
+      if (mounted) {
+        setProblems(items);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQuery, difficulty, tags]);
+
+  const availableTags = useMemo(
+    () => [...new Set(problems.flatMap((problem) => problem.tags))].sort((a, b) => a.localeCompare(b)),
+    [problems],
+  );
+
   const filtered = useMemo(() => {
-    return mockProblems.filter((problem) => {
+    return problems.filter((problem) => {
       const queryMatch = problem.title.toLowerCase().includes(debouncedQuery.toLowerCase());
       const difficultyMatch = difficulty === 'All' || problem.difficulty === difficulty;
       const tagsMatch = tags.length === 0 || tags.some((tag) => problem.tags.includes(tag));
       return queryMatch && difficultyMatch && tagsMatch;
     });
-  }, [debouncedQuery, difficulty, tags]);
+  }, [problems, debouncedQuery, difficulty, tags]);
 
   const totalPages = filtered.length === 0 ? 0 : Math.ceil(filtered.length / PAGE_SIZE);
   const currentPage = totalPages === 0 ? 1 : Math.min(page, totalPages);
@@ -34,7 +57,7 @@ const ProblemsPage = () => {
   return (
     <PageContainer>
       <SectionHeader title="Problems" subtitle="Search, filter and solve across all difficulty levels." />
-      <ProblemFilters />
+      <ProblemFilters tags={availableTags} />
       {filtered.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center text-sm text-slate-400">
           No problems matched your current filters. Try widening your search.

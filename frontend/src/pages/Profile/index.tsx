@@ -1,30 +1,55 @@
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/common/Card';
 import { PageContainer } from '@/components/common/PageContainer';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { ActivityTimeline } from '@/components/profile/ActivityTimeline';
 import { StatCard } from '@/components/profile/StatCard';
-import { mockUser } from '@/services/mockData';
+import { userService } from '@/services/userService';
+import type { User } from '@/types';
 
 const heatmap = Array.from({ length: 56 }, (_, index) => (index * 17) % 5);
 
-const ProfilePage = () => (
-  <PageContainer>
+const ProfilePage = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    userService.me().then((me) => {
+      if (mounted) {
+        setUser(me);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!user) {
+    return (
+      <PageContainer>
+        <SectionHeader title="Profile" subtitle="Your coding performance dashboard." />
+      </PageContainer>
+    );
+  }
+
+  return (
+    <PageContainer>
     <SectionHeader title="Profile" subtitle="Your coding performance dashboard." />
 
     <div className="grid gap-4 md:grid-cols-[1.2fr_1fr]">
       <Card>
         <div className="flex items-center gap-4">
-          <img src={mockUser.avatar} alt={mockUser.name} className="h-16 w-16 rounded-full border border-white/20" />
+          <img src={user.avatar} alt={user.name} className="h-16 w-16 rounded-full border border-white/20" />
           <div>
-            <h1 className="text-xl font-semibold text-white">{mockUser.name}</h1>
-            <p className="text-sm text-slate-400">{mockUser.email}</p>
+            <h1 className="text-xl font-semibold text-white">{user.name}</h1>
+            <p className="text-sm text-slate-400">{user.email}</p>
           </div>
         </div>
       </Card>
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Rating" value={String(mockUser.rating)} hint="Global top 8%" />
-        <StatCard label="Solved" value={String(mockUser.solvedCount)} hint="Across all topics" />
-        <StatCard label="Streak" value={`${mockUser.streak}d`} hint="Daily consistency" />
+        <StatCard label="Rating" value={String(user.rating)} hint="Global top 8%" />
+        <StatCard label="Solved" value={String(user.solvedCount)} hint="Across all topics" />
+        <StatCard label="Streak" value={`${user.streak}d`} hint="Daily consistency" />
       </div>
     </div>
 
@@ -68,7 +93,8 @@ const ProfilePage = () => (
       </Card>
       <ActivityTimeline />
     </div>
-  </PageContainer>
-);
+    </PageContainer>
+  );
+};
 
 export default ProfilePage;

@@ -1,12 +1,31 @@
 import { Rocket } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { PageContainer } from '@/components/common/PageContainer';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { ContestCard } from '@/components/contest/ContestCard';
 import { Card } from '@/components/common/Card';
-import { mockContests, mockLeaderboard } from '@/services/mockData';
+import { contestService } from '@/services/contestService';
+import { leaderboardService } from '@/services/leaderboardService';
+import type { Contest, LeaderboardEntry } from '@/types';
 
-const ContestPage = () => (
-  <PageContainer>
+const ContestPage = () => {
+  const [contests, setContests] = useState<Contest[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([contestService.list(), leaderboardService.list()]).then(([contestItems, ranking]) => {
+      if (!mounted) return;
+      setContests(contestItems);
+      setLeaderboard(ranking);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return (
+    <PageContainer>
     <div className="mb-6 rounded-2xl border border-white/10 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 p-5">
       <p className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-xs text-white">
         <Rocket size={12} /> Live Arena
@@ -17,7 +36,7 @@ const ContestPage = () => (
 
     <SectionHeader title="Contests" subtitle="Live and upcoming events" />
     <div className="grid gap-4 lg:grid-cols-3">
-      {mockContests.map((contest) => (
+      {contests.map((contest) => (
         <ContestCard key={contest.id} contest={contest} />
       ))}
     </div>
@@ -26,7 +45,7 @@ const ContestPage = () => (
       <SectionHeader title="Ranking Preview" subtitle="Current top performers" />
       <Card>
         <ul className="space-y-2 text-sm">
-          {mockLeaderboard.slice(0, 5).map((entry) => (
+          {leaderboard.slice(0, 5).map((entry) => (
             <li key={entry.user.id} className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
               <span>#{entry.rank} {entry.user.name}</span>
               <span className="font-mono text-brand-orange">{entry.user.rating}</span>
@@ -35,7 +54,8 @@ const ContestPage = () => (
         </ul>
       </Card>
     </section>
-  </PageContainer>
-);
+    </PageContainer>
+  );
+};
 
 export default ContestPage;

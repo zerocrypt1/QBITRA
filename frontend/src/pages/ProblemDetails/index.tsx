@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Play, Send } from 'lucide-react';
 import { PageContainer } from '@/components/common/PageContainer';
@@ -6,26 +6,64 @@ import { Card } from '@/components/common/Card';
 import { Button } from '@/components/common/Button';
 import { CodeEditor } from '@/components/editor/CodeEditor';
 import { TestcasePanel } from '@/components/editor/TestcasePanel';
-import { mockProblems } from '@/services/mockData';
+import { problemService } from '@/services/problemService';
+import { submissionService } from '@/services/submissionService';
 import { useToast } from '@/hooks/useToast';
+import type { Problem } from '@/types';
 
 const starterCode = `function solve(input) {\n  // Write your solution\n  return input;\n}`;
 
 const ProblemDetailsPage = () => {
   const { problemId } = useParams();
-  const problem = mockProblems.find((item) => item.id === problemId) ?? mockProblems[0];
+  const [problem, setProblem] = useState<Problem | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [code, setCode] = useState(starterCode);
   const [input, setInput] = useState('1 2 3 4');
   const [output, setOutput] = useState('10');
   const toast = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+    if (!problemId) return;
+    problemService.get(problemId).then((item) => {
+      if (mounted) {
+        setProblem(item);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [problemId]);
+
+  const submitCode = async () => {
+    if (!problemId) {
+      toast.error('Missing problem', 'Unable to identify problem.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const submission = await submissionService.submit({ problem_id: problemId, language: 'javascript', code });
+      if (submission) {
+        toast.success('Submission queued', `Token: ${submission.execution_token ?? 'created'}`);
+      } else {
+        toast.info('Submission sent', 'Your solution was submitted.');
+      }
+    } catch {
+      toast.error('Submission failed', 'Please check login and try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <PageContainer>
       <div className="grid gap-4 xl:grid-cols-[1.05fr_1.2fr]">
         <Card className="space-y-4" hover={false}>
           <div>
-            <h1 className="text-2xl font-semibold text-white">{problem.title}</h1>
-            <p className="mt-1 text-sm text-slate-400">Difficulty: {problem.difficulty} • Points: {problem.points}</p>
+            <h1 className="text-2xl font-semibold text-white">{problem?.title ?? 'Problem'}</h1>
+            <p className="mt-1 text-sm text-slate-400">
+              Difficulty: {problem?.difficulty ?? 'N/A'} • Points: {problem?.points ?? 0}
+            </p>
           </div>
           <article className="space-y-4 text-sm text-slate-300">
             <section>
@@ -57,8 +95,8 @@ const ProblemDetailsPage = () => {
             <Button variant="secondary" onClick={() => toast.info('Run finished', 'Execution completed in 42ms')}>
               <Play size={14} className="mr-2" /> Run Code
             </Button>
-            <Button onClick={() => toast.success('Submission accepted', 'All testcases passed successfully')}>
-              <Send size={14} className="mr-2" /> Submit
+            <Button onClick={submitCode} disabled={submitting}>
+              <Send size={14} className="mr-2" /> {submitting ? 'Submitting...' : 'Submit'}
             </Button>
           </div>
         </div>

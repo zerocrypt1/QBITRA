@@ -1,13 +1,19 @@
-import { api } from '@/api/axios';
-import { ENDPOINTS } from '@/api/endpoints';
+import type { LeaderboardEntry } from '@/types';
 import { mockLeaderboard } from './mockData';
+import { userService } from './userService';
 
 export const leaderboardService = {
   async list() {
-    const response = await api.get(ENDPOINTS.leaderboard.list).catch(() => null);
-    if (response?.data && Array.isArray(response.data)) {
-      return response.data;
+    try {
+      const me = await userService.me();
+      const mineEntry: LeaderboardEntry = {
+        rank: 1,
+        change: 0,
+        user: me,
+      };
+      return [mineEntry, ...mockLeaderboard.filter((entry) => entry.user.id !== me.id)];
+    } catch {
+      return mockLeaderboard;
     }
-    return mockLeaderboard;
   },
 };
