@@ -4,11 +4,17 @@ import { mockProblems } from './mockData';
 
 export const problemService = {
   async list() {
-    await api.get(ENDPOINTS.problems.list).catch(() => null);
+    const response = await api.get(ENDPOINTS.problems.list).catch(() => null);
+    if (response?.data && Array.isArray(response.data)) {
+      return response.data;
+    }
     return mockProblems;
   },
   async get(id: string) {
-    await api.get(ENDPOINTS.problems.byId(id)).catch(() => null);
-    return mockProblems.find((problem) => problem.id === id) ?? mockProblems[0];
+    const response = await api.get(ENDPOINTS.problems.byId(id)).catch(() => null);
+    if (response?.data) {
+      return response.data;
+    }
+    return mockProblems.find((problem) => problem.id === id) ?? null;
   },
 };

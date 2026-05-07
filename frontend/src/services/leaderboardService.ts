@@ -4,7 +4,10 @@ import { mockLeaderboard } from './mockData';
 
 export const leaderboardService = {
   async list() {
-    await api.get(ENDPOINTS.leaderboard.list).catch(() => null);
+    const response = await api.get(ENDPOINTS.leaderboard.list).catch(() => null);
+    if (response?.data && Array.isArray(response.data)) {
+      return response.data;
+    }
     return mockLeaderboard;
   },
 };

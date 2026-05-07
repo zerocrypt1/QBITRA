@@ -31,7 +31,7 @@ const ProfilePage = () => (
     <div className="mt-6 grid gap-4 lg:grid-cols-2">
       <Card>
         <h3 className="mb-4 text-sm font-semibold text-white">Submission Heatmap</h3>
-        <div className="grid grid-cols-14 gap-1">
+        <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}>
           {heatmap.map((value, index) => (
             <span
               key={index}
